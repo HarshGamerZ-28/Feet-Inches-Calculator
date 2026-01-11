@@ -45,13 +45,9 @@ button {
     border-radius: 14px;
     border: none;
     cursor: pointer;
+    background: linear-gradient(45deg, #007aff, #00c6ff);
+    color: white;
 }
-.op { background: linear-gradient(45deg, #ff9500, #ffcc00); color: white; }
-.num { background: #e0e0e0; }
-.clear { background: #ff3b30; color: white; }
-.equal { background: #34c759; color: white; }
-.histBtn { background: #5856d6; color: white; }
-.mult { background: linear-gradient(45deg, #8e44ad, #9b59b6); color: white; }
 #history {
     margin-top: 15px;
     font-size: 16px;
@@ -72,33 +68,33 @@ button {
     <div id="display" class="display"></div>
     <div class="grid">
         <!-- Top row -->
-        <button class="clear" onclick="clr()">C</button>
-        <button class="op" onclick="press('( )')">( )</button>
-        <button class="histBtn" onclick="toggleHistory()">History</button>
-        <button class="op" onclick="press('/')">÷</button>
+        <button onclick="clr()">C</button>
+        <button onclick="press('( )')">( )</button>
+        <button onclick="toggleHistory()">History</button>
+        <button onclick="press('/')">÷</button>
 
         <!-- Numbers and operators -->
-        <button class="num" onclick="press('7')">7</button>
-        <button class="num" onclick="press('8')">8</button>
-        <button class="num" onclick="press('9')">9</button>
+        <button onclick="press('7')">7</button>
+        <button onclick="press('8')">8</button>
+        <button onclick="press('9')">9</button>
         <!-- swapped: multiplication here -->
-        <button class="mult" onclick="press('*')">×</button>
+        <button onclick="press('*')">×</button>
 
-        <button class="num" onclick="press('4')">4</button>
-        <button class="num" onclick="press('5')">5</button>
-        <button class="num" onclick="press('6')">6</button>
-        <button class="op" onclick="press('-')">−</button>
+        <button onclick="press('4')">4</button>
+        <button onclick="press('5')">5</button>
+        <button onclick="press('6')">6</button>
+        <button onclick="press('-')">−</button>
 
-        <button class="num" onclick="press('1')">1</button>
-        <button class="num" onclick="press('2')">2</button>
-        <button class="num" onclick="press('3')">3</button>
-        <button class="op" onclick="press('+')">＋</button>
+        <button onclick="press('1')">1</button>
+        <button onclick="press('2')">2</button>
+        <button onclick="press('3')">3</button>
+        <button onclick="press('+')">＋</button>
 
-        <button class="num" onclick="press('0')">0</button>
-        <button class="num" onclick="press('.')">.</button>
+        <button onclick="press('0')">0</button>
+        <button onclick="press('.')">.</button>
         <!-- swapped: delete here -->
-        <button class="clear" onclick="del()">DEL</button>
-        <button class="equal" onclick="calc()">=</button>
+        <button onclick="del()">DEL</button>
+        <button onclick="calc()">=</button>
     </div>
     <div id="history"></div>
 </div>
@@ -108,7 +104,6 @@ let display = document.getElementById("display");
 let expr = "";
 
 function press(v) {
-    // Add spacing around operators
     if (['+', '-', '*', '/', '( )'].includes(v)) {
         if (v === '( )') {
             expr += " ( ) ";
@@ -116,7 +111,6 @@ function press(v) {
             expr += " " + v + " ";
         }
     } else if (v === ".") {
-        // If user types ".3", convert to "0.3"
         if (expr === "" || expr.slice(-1) === " ") {
             expr += "0.";
         } else {
@@ -158,7 +152,6 @@ function calc() {
         let resultInch = eval(converted.join(" "));
         let result = resultInch / div;
 
-        // Round UP to nearest 1 decimal place
         let final = (Math.ceil(result * 10) / 10).toFixed(1);
 
         document.getElementById("history").innerHTML += expr + " = " + final + "<br>";
