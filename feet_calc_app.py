@@ -48,10 +48,9 @@ button {
 }
 .op { background: linear-gradient(45deg, #ff9500, #ffcc00); color: white; }
 .num { background: #e0e0e0; }
-.clear { background: #ff3b30; color: white; grid-column: span 2; }
-.equal { background: #34c759; color: white; grid-column: span 2; }
-.histBtn { background: #5856d6; color: white; grid-column: span 2; }
-.clearHist { background: #ff2d55; color: white; grid-column: span 2; }
+.clear { background: #ff3b30; color: white; }
+.equal { background: #34c759; color: white; }
+.histBtn { background: #5856d6; color: white; }
 #history {
     margin-top: 15px;
     font-size: 16px;
@@ -71,6 +70,13 @@ button {
 <div class="calc">
     <div id="display" class="display"></div>
     <div class="grid">
+        <!-- Top row with functions -->
+        <button class="clear" onclick="clr()">C</button>
+        <button class="op" onclick="press('( )')">( )</button>
+        <button class="histBtn" onclick="toggleHistory()">History</button>
+        <button class="num" onclick="del()">⌫</button>
+
+        <!-- Numbers and operators -->
         <button class="num" onclick="press('7')">7</button>
         <button class="num" onclick="press('8')">8</button>
         <button class="num" onclick="press('9')">9</button>
@@ -88,16 +94,8 @@ button {
 
         <button class="num" onclick="press('0')">0</button>
         <button class="num" onclick="press('.')">.</button>
-        <button class="num" onclick="del()">⌫</button>
         <button class="op" onclick="press('+')">+</button>
-
-        <button class="op" onclick="press('(')">(</button>
-        <button class="op" onclick="press(')')">)</button>
-        <button class="clear" onclick="clr()">C</button>
         <button class="equal" onclick="calc()">=</button>
-
-        <button class="histBtn" onclick="toggleHistory()">Show/Hide History</button>
-        <button class="clearHist" onclick="clearHistory()">Clear History</button>
     </div>
     <div id="history"></div>
 </div>
@@ -108,8 +106,12 @@ let expr = "";
 
 function press(v) {
     // Add spacing around operators
-    if (['+', '-', '*', '/', '(', ')'].includes(v)) {
-        expr += " " + v + " ";
+    if (['+', '-', '*', '/', '( )'].includes(v)) {
+        if (v === '( )') {
+            expr += " ( ) ";
+        } else {
+            expr += " " + v + " ";
+        }
     } else if (v === ".") {
         // If user types ".3", convert to "0.3"
         if (expr === "" || expr.slice(-1) === " ") {
@@ -166,10 +168,6 @@ function calc() {
 function toggleHistory() {
     let h = document.getElementById("history");
     h.style.display = (h.style.display === "none") ? "block" : "none";
-}
-
-function clearHistory() {
-    document.getElementById("history").innerHTML = "";
 }
 </script>
 </body>
