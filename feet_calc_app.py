@@ -18,17 +18,17 @@ h2 {
     text-align: center;
     margin: 0;
     color: white;
-    background: linear-gradient(90deg, #00695c, #00b894); /* peacock green gradient */
+    background: linear-gradient(90deg, #00695c, #00b894);
     padding: 15px;
     border-radius: 12px 12px 0 0;
 }
 .calc {
     max-width: 420px;
     margin: auto;
-    border: 3px solid #00695c; /* peacock green border */
+    border: 3px solid #00695c;
     border-radius: 16px;
     padding: 10px;
-    background: #e8f5e9; /* light green background inside */
+    background: #e8f5e9;
 }
 .display {
     background: black;
@@ -52,7 +52,7 @@ button {
     border-radius: 14px;
     border: none;
     cursor: pointer;
-    background: linear-gradient(45deg, #007aff, #00c6ff); /* unified blue-cyan gradient */
+    background: linear-gradient(45deg, #007aff, #00c6ff);
     color: white;
 }
 #history {
@@ -65,6 +65,19 @@ button {
     background: #f1f1f1;
     padding: 10px;
     border-radius: 10px;
+    position: relative;
+}
+#clearBtn {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 8px;
+    border: none;
+    cursor: pointer;
+    background: linear-gradient(45deg, #ff6b6b, #ff4757);
+    color: white;
 }
 </style>
 </head>
@@ -74,17 +87,14 @@ button {
 <div class="calc">
     <div id="display" class="display"></div>
     <div class="grid">
-        <!-- Top row -->
         <button onclick="clr()">C</button>
         <button onclick="press('( )')">( )</button>
         <button onclick="toggleHistory()">History</button>
         <button onclick="press('/')">÷</button>
 
-        <!-- Numbers and operators -->
         <button onclick="press('7')">7</button>
         <button onclick="press('8')">8</button>
         <button onclick="press('9')">9</button>
-        <!-- swapped: multiplication here -->
         <button onclick="press('*')">×</button>
 
         <button onclick="press('4')">4</button>
@@ -99,11 +109,12 @@ button {
 
         <button onclick="press('0')">0</button>
         <button onclick="press('.')">.</button>
-        <!-- swapped: delete here with ⌫ symbol -->
         <button onclick="del()">⌫</button>
         <button onclick="calc()">=</button>
     </div>
-    <div id="history"></div>
+    <div id="history">
+        <button id="clearBtn" onclick="clearHistory()">Clear</button>
+    </div>
 </div>
 
 <script>
@@ -173,6 +184,10 @@ function calc() {
 function toggleHistory() {
     let h = document.getElementById("history");
     h.style.display = (h.style.display === "none") ? "block" : "none";
+}
+
+function clearHistory() {
+    document.getElementById("history").innerHTML = '<button id="clearBtn" onclick="clearHistory()">Clear</button>';
 }
 </script>
 </body>
