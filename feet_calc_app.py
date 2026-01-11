@@ -2,8 +2,11 @@ import streamlit as st
 
 def convert_to_inches(value):
     try:
-        feet, inches = value.split(".")
-        return (int(feet) * 12) + int(inches)
+        if "." in value:
+            feet, inches = value.split(".")
+            return (int(feet) * 12) + int(inches)
+        else:
+            return int(value) * 12  # allow plain feet
     except Exception:
         return None
 
@@ -34,7 +37,7 @@ def custom_calc(expr):
         elif op == "-":
             result = inches1 - inches2
         elif op == "*":
-            result = (inches1 * inches2) / 144
+            result = (inches1 * inches2) / 144  # square feet
         elif op == "/":
             if inches2 == 0:
                 return "Division by zero!"
@@ -50,7 +53,7 @@ st.title("Feet.Inches Calculator 🧮")
 if "expr" not in st.session_state:
     st.session_state["expr"] = ""
 
-st.text_input("Expression", key="expr_box")
+st.text_input("Expression", key="expr")
 
 if st.button("Calculate"):
     result = custom_calc(st.session_state["expr"])
@@ -72,5 +75,3 @@ for row in buttons:
                 st.session_state["expr"] = ""
             else:
                 st.session_state["expr"] += b
-            # Sync text input with updated expr
-            st.session_state["expr_box"] = st.session_state["expr"]
