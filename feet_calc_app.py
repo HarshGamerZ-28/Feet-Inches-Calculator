@@ -70,7 +70,7 @@ button {
 <div class="calc">
     <div id="display" class="display"></div>
     <div class="grid">
-        <!-- Top row with functions -->
+        <!-- Top row -->
         <button class="clear" onclick="clr()">C</button>
         <button class="op" onclick="press('( )')">( )</button>
         <button class="histBtn" onclick="toggleHistory()">History</button>
@@ -85,7 +85,7 @@ button {
         <button class="num" onclick="press('4')">4</button>
         <button class="num" onclick="press('5')">5</button>
         <button class="num" onclick="press('6')">6</button>
-        <button class="op" onclick="press('*')">×</button>
+        <button class="op" onclick="press('+')">＋</button>
 
         <button class="num" onclick="press('1')">1</button>
         <button class="num" onclick="press('2')">2</button>
@@ -94,7 +94,7 @@ button {
 
         <button class="num" onclick="press('0')">0</button>
         <button class="num" onclick="press('.')">.</button>
-        <button class="op" onclick="press('+')">+</button>
+        <button class="op" onclick="press('*')">×</button>
         <button class="equal" onclick="calc()">=</button>
     </div>
     <div id="history"></div>
@@ -154,7 +154,9 @@ function calc() {
         });
         let resultInch = eval(converted.join(" "));
         let result = resultInch / div;
-        let final = result.toFixed(2);
+
+        // Round UP to nearest 1 decimal place
+        let final = (Math.ceil(result * 10) / 10).toFixed(1);
 
         document.getElementById("history").innerHTML += expr + " = " + final + "<br>";
         expr = final;
