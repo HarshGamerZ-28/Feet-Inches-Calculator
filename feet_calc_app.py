@@ -81,7 +81,8 @@ button {
         <button class="num" onclick="press('7')">7</button>
         <button class="num" onclick="press('8')">8</button>
         <button class="num" onclick="press('9')">9</button>
-        <button class="clear" onclick="del()">DEL</button>
+        <!-- swapped: multiplication here -->
+        <button class="mult" onclick="press('*')">×</button>
 
         <button class="num" onclick="press('4')">4</button>
         <button class="num" onclick="press('5')">5</button>
@@ -95,7 +96,8 @@ button {
 
         <button class="num" onclick="press('0')">0</button>
         <button class="num" onclick="press('.')">.</button>
-        <button class="mult" onclick="press('*')">×</button>
+        <!-- swapped: delete here -->
+        <button class="clear" onclick="del()">DEL</button>
         <button class="equal" onclick="calc()">=</button>
     </div>
     <div id="history"></div>
