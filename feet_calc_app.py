@@ -51,6 +51,7 @@ button {
 .clear { background: #ff3b30; color: white; }
 .equal { background: #34c759; color: white; }
 .histBtn { background: #5856d6; color: white; }
+.mult { background: linear-gradient(45deg, #8e44ad, #9b59b6); color: white; }
 #history {
     margin-top: 15px;
     font-size: 16px;
@@ -80,7 +81,7 @@ button {
         <button class="num" onclick="press('7')">7</button>
         <button class="num" onclick="press('8')">8</button>
         <button class="num" onclick="press('9')">9</button>
-        <button class="num" onclick="del()">⌫</button>
+        <button class="clear" onclick="del()">DEL</button>
 
         <button class="num" onclick="press('4')">4</button>
         <button class="num" onclick="press('5')">5</button>
@@ -94,7 +95,7 @@ button {
 
         <button class="num" onclick="press('0')">0</button>
         <button class="num" onclick="press('.')">.</button>
-        <button class="op" onclick="press('*')">×</button>
+        <button class="mult" onclick="press('*')">×</button>
         <button class="equal" onclick="calc()">=</button>
     </div>
     <div id="history"></div>
