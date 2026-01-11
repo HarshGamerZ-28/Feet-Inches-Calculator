@@ -1,4 +1,5 @@
 import streamlit as st
+import re
 
 # -----------------------------
 # Page config
@@ -10,7 +11,7 @@ st.set_page_config(
 )
 
 # -----------------------------
-# CSS (force mobile grid + dark display)
+# CSS
 # -----------------------------
 st.markdown("""
 <style>
@@ -25,13 +26,11 @@ st.markdown("""
     margin-bottom: 15px;
     min-height: 70px;
 }
-
 .calc-row {
     display: flex;
     gap: 8px;
     margin-bottom: 8px;
 }
-
 .calc-row button {
     flex: 1;
     height: 65px;
@@ -61,42 +60,37 @@ def delete():
 def clear():
     st.session_state.display = ""
 
+def feet_to_inches(num):
+    if "." in num:
+        f, i = num.split(".")
+        return int(f) * 12 + int(i)
+    return int(num) * 12
+
 def calculate():
     try:
-        expr = st.session_state.display.replace("×", "*").replace("÷", "/")
+        expr = st.session_state.display
+        expr = expr.replace("×", "*").replace("÷", "/")
 
-        output = []
-        num = ""
+        # Detect operation type
+        if "*" in expr or "/" in expr:
+            final_divisor = 144
+        else:
+            final_divisor = 12
 
-        for ch in expr:
-            if ch.isdigit() or ch == ".":
-                num += ch
+        tokens = re.split(r'([+\-*/])', expr)
+        converted = []
+
+        for t in tokens:
+            if t.isdigit() or "." in t:
+                converted.append(str(feet_to_inches(t)))
             else:
-                if num:
-                    if "." in num:
-                        f, i = num.split(".")
-                        inches = int(f) * 12 + int(i)
-                    else:
-                        inches = int(num) * 12
-                    output.append(str(inches))
-                    num = ""
-                output.append(ch)
+                converted.append(t)
 
-        if num:
-            if "." in num:
-                f, i = num.split(".")
-                inches = int(f) * 12 + int(i)
-            else:
-                inches = int(num) * 12
-            output.append(str(inches))
-
-        inch_expr = "".join(output)
+        inch_expr = "".join(converted)
         result_inches = eval(inch_expr)
 
-        # ✅ FINAL CORRECT STEP
-        result_feet = result_inches / 12
-
-        st.session_state.display = str(round(result_feet, 2))
+        result = result_inches / final_divisor
+        st.session_state.display = str(round(result, 2))
 
     except:
         st.session_state.display = "Error"
@@ -110,7 +104,7 @@ st.markdown(
 )
 
 # -----------------------------
-# Calculator Buttons (mobile fixed)
+# Buttons
 # -----------------------------
 rows = [
     ["7", "8", "9", "÷"],
@@ -133,4 +127,4 @@ for row in rows:
 st.button("C", use_container_width=True, on_click=clear)
 st.button("=", use_container_width=True, on_click=calculate)
 
-st.caption("2.4 → (2×12)+4 | Final result ÷ 12")
+st.caption("➕➖ → ÷12   |   ✖➗ → ÷144")
