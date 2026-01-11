@@ -41,21 +41,27 @@ h2 {
 }
 button {
     height: 70px;
-    font-size: 24px;
+    font-size: 22px;
     border-radius: 14px;
     border: none;
     cursor: pointer;
 }
-.op { background: #ff9500; color: white; }
+.op { background: linear-gradient(45deg, #ff9500, #ffcc00); color: white; }
 .num { background: #e0e0e0; }
 .clear { background: #ff3b30; color: white; grid-column: span 2; }
 .equal { background: #34c759; color: white; grid-column: span 2; }
+.histBtn { background: #5856d6; color: white; grid-column: span 2; }
+.clearHist { background: #ff2d55; color: white; grid-column: span 2; }
 #history {
     margin-top: 15px;
     font-size: 16px;
     color: #555;
     max-height: 150px;
     overflow-y: auto;
+    display: none;
+    background: #f1f1f1;
+    padding: 10px;
+    border-radius: 10px;
 }
 </style>
 </head>
@@ -85,8 +91,13 @@ button {
         <button class="num" onclick="del()">⌫</button>
         <button class="op" onclick="press('+')">+</button>
 
+        <button class="op" onclick="press('(')">(</button>
+        <button class="op" onclick="press(')')">)</button>
         <button class="clear" onclick="clr()">C</button>
         <button class="equal" onclick="calc()">=</button>
+
+        <button class="histBtn" onclick="toggleHistory()">Show/Hide History</button>
+        <button class="clearHist" onclick="clearHistory()">Clear History</button>
     </div>
     <div id="history"></div>
 </div>
@@ -96,11 +107,24 @@ let display = document.getElementById("display");
 let expr = "";
 
 function press(v) {
-    expr += v;
+    // Add spacing around operators
+    if (['+', '-', '*', '/', '(', ')'].includes(v)) {
+        expr += " " + v + " ";
+    } else if (v === ".") {
+        // If user types ".3", convert to "0.3"
+        if (expr === "" || expr.slice(-1) === " ") {
+            expr += "0.";
+        } else {
+            expr += ".";
+        }
+    } else {
+        expr += v;
+    }
     display.innerText = expr;
 }
 
 function del() {
+    expr = expr.trimEnd();
     expr = expr.slice(0, -1);
     display.innerText = expr;
 }
@@ -120,17 +144,13 @@ function feetToInch(n) {
 
 function calc() {
     try {
-        // Addition & subtraction → divide by 12
-        // Multiplication & division → divide by 144
         let div = (expr.includes("*") || expr.includes("/")) ? 144 : 12;
-
-        let tokens = expr.split(/([+\\-*/])/);
+        let tokens = expr.split(/([+\\-*/()])/).map(t => t.trim()).filter(t => t !== "");
         let converted = tokens.map(t => {
             if (!isNaN(t) && t !== "") return feetToInch(t);
             return t;
         });
-
-        let resultInch = eval(converted.join(""));
+        let resultInch = eval(converted.join(" "));
         let result = resultInch / div;
         let final = result.toFixed(2);
 
@@ -142,9 +162,18 @@ function calc() {
         expr = "";
     }
 }
+
+function toggleHistory() {
+    let h = document.getElementById("history");
+    h.style.display = (h.style.display === "none") ? "block" : "none";
+}
+
+function clearHistory() {
+    document.getElementById("history").innerHTML = "";
+}
 </script>
 </body>
 </html>
 """
 
-components.html(html_code, height=700)
+components.html(html_code, height=800)
