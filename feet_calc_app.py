@@ -1,6 +1,5 @@
 import streamlit as st
 
-# --- Conversion helper ---
 def convert_to_inches(value):
     try:
         feet, inches = value.split(".")
@@ -8,7 +7,6 @@ def convert_to_inches(value):
     except Exception:
         return None
 
-# --- Custom calculator ---
 def custom_calc(expr):
     try:
         if "+" in expr:
@@ -49,16 +47,16 @@ def custom_calc(expr):
 # --- Streamlit UI ---
 st.title("Feet.Inches Calculator 🧮")
 
-# Expression input bound directly to session state
-st.text_input("Expression", key="expr")
+if "expr" not in st.session_state:
+    st.session_state["expr"] = ""
 
-# Show result on top
+st.text_input("Expression", key="expr_box")
+
 if st.button("Calculate"):
-    result = custom_calc(st.session_state.get("expr", ""))
+    result = custom_calc(st.session_state["expr"])
     st.subheader("Result:")
     st.write(result)
 
-# Calculator buttons
 buttons = [
     ["7", "8", "9", "+"],
     ["4", "5", "6", "-"],
@@ -70,8 +68,9 @@ for row in buttons:
     cols = st.columns(len(row))
     for i, b in enumerate(row):
         if cols[i].button(b, use_container_width=True):
-            current_expr = st.session_state.get("expr", "")
             if b == "C":
                 st.session_state["expr"] = ""
             else:
-                st.session_state["expr"] = current_expr + b
+                st.session_state["expr"] += b
+            # Sync text input with updated expr
+            st.session_state["expr_box"] = st.session_state["expr"]
