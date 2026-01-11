@@ -12,6 +12,12 @@ html_code = """
 body {
     margin: 0;
     font-family: Arial, sans-serif;
+    background: #f9f9f9;
+}
+h2 {
+    text-align: center;
+    margin: 15px;
+    color: #333;
 }
 .calc {
     max-width: 420px;
@@ -34,9 +40,9 @@ body {
     margin-top: 15px;
 }
 button {
-    height: 65px;
-    font-size: 22px;
-    border-radius: 12px;
+    height: 70px;
+    font-size: 24px;
+    border-radius: 14px;
     border: none;
     cursor: pointer;
 }
@@ -44,13 +50,20 @@ button {
 .num { background: #e0e0e0; }
 .clear { background: #ff3b30; color: white; grid-column: span 2; }
 .equal { background: #34c759; color: white; grid-column: span 2; }
+#history {
+    margin-top: 15px;
+    font-size: 16px;
+    color: #555;
+    max-height: 150px;
+    overflow-y: auto;
+}
 </style>
 </head>
 
 <body>
+<h2>Feet Calculator</h2>
 <div class="calc">
     <div id="display" class="display"></div>
-
     <div class="grid">
         <button class="num" onclick="press('7')">7</button>
         <button class="num" onclick="press('8')">8</button>
@@ -75,6 +88,7 @@ button {
         <button class="clear" onclick="clr()">C</button>
         <button class="equal" onclick="calc()">=</button>
     </div>
+    <div id="history"></div>
 </div>
 
 <script>
@@ -106,6 +120,8 @@ function feetToInch(n) {
 
 function calc() {
     try {
+        // Addition & subtraction → divide by 12
+        // Multiplication & division → divide by 144
         let div = (expr.includes("*") || expr.includes("/")) ? 144 : 12;
 
         let tokens = expr.split(/([+\\-*/])/);
@@ -116,8 +132,10 @@ function calc() {
 
         let resultInch = eval(converted.join(""));
         let result = resultInch / div;
+        let final = result.toFixed(2);
 
-        expr = result.toFixed(2);
+        document.getElementById("history").innerHTML += expr + " = " + final + "<br>";
+        expr = final;
         display.innerText = expr;
     } catch {
         display.innerText = "Error";
@@ -129,4 +147,4 @@ function calc() {
 </html>
 """
 
-components.html(html_code, height=650)
+components.html(html_code, height=700)
