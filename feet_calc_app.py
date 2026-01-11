@@ -1,84 +1,65 @@
 import streamlit as st
 
-def convert_to_inches(value):
-    try:
-        if "." in value:
-            feet, inches = value.split(".")
-            return (int(feet) * 12) + int(inches)
-        else:
-            return int(value) * 12
-    except Exception:
-        return None
+st.set_page_config(page_title="Feet & Inches Calculator", layout="centered")
 
-def custom_calc(expr):
-    try:
-        if "+" in expr:
-            left, right = expr.split("+")
-            op = "+"
-        elif "-" in expr:
-            left, right = expr.split("-")
-            op = "-"
-        elif "*" in expr:
-            left, right = expr.split("*")
-            op = "*"
-        elif "/" in expr:
-            left, right = expr.split("/")
-            op = "/"
-        else:
-            return "Invalid Expression!"
+st.title("📏 Feet & Inches Calculator")
 
-        inches1 = convert_to_inches(left.strip())
-        inches2 = convert_to_inches(right.strip())
-        if inches1 is None or inches2 is None:
-            return "Invalid Input! Use feet.inches format"
-
-        if op == "+":
-            result = inches1 + inches2
-        elif op == "-":
-            result = inches1 - inches2
-        elif op == "*":
-            result = (inches1 * inches2) / 144
-        elif op == "/":
-            if inches2 == 0:
-                return "Division by zero!"
-            result = inches1 / inches2
-
-        return round(result, 1)
-    except Exception:
-        return "Error in calculation!"
-
-# --- Streamlit UI ---
-st.title("Feet.Inches Calculator 🧮")
-
-# Internal state (not bound to widget)
+# -------------------------------
+# Initialize session state safely
+# -------------------------------
 if "expr" not in st.session_state:
-    st.session_state["expr"] = ""
+    st.session_state.expr = ""
 
-# Text input shows current expr but uses a different key
-expr_box = st.text_input("Expression", value=st.session_state["expr"], key="expr_box")
+# -------------------------------
+# Input box
+# -------------------------------
+st.text_input(
+    "Enter expression (example: 5'6\" + 3'4\")",
+    key="expr"
+)
 
-# Sync back from text input if user types manually
-st.session_state["expr"] = expr_box
+# -------------------------------
+# Buttons
+# -------------------------------
+col1, col2, col3 = st.columns(3)
 
-if st.button("Calculate"):
-    result = custom_calc(st.session_state["expr"])
-    st.subheader("Result:")
-    st.write(result)
+with col1:
+    if st.button("Calculate"):
+        try:
+            # Convert feet & inches to total inches
+            import re
 
-buttons = [
-    ["7", "8", "9", "+"],
-    ["4", "5", "6", "-"],
-    ["1", "2", "3", "*"],
-    ["0", ".", "/", "C"]
-]
+            def to_inches(match):
+                feet = int(match.group(1))
+                inches = int(match.group(2))
+                return str(feet * 12 + inches)
 
-for row in buttons:
-    cols = st.columns(len(row))
-    for i, b in enumerate(row):
-        if cols[i].button(b, use_container_width=True):
-            if b == "C":
-                st.session_state["expr"] = ""
-            else:
-                st.session_state["expr"] = st.session_state["expr"] + b
-            # Update text input display
-            st.session_state["expr_box"] = st.session_state["expr"]
+            expr = st.session_state.expr
+
+            # Replace 5'6" with inches
+            expr = re.sub(r"(\d+)'\s*(\d+)\"", to_inches, expr)
+
+            result_inches = eval(expr)
+
+            feet = result_inches // 12
+            inches = result_inches % 12
+
+            st.success(f"Result: **{feet}' {inches}\"**")
+
+        except Exception as e:
+            st.error("Invalid expression ❌")
+
+with col2:
+    if st.button("Clear"):
+        st.session_state.expr = ""
+
+with col3:
+    if st.button("Example"):
+        st.session_state.expr = "5'6\" + 3'4\""
+
+# -------------------------------
+# Footer
+# -------------------------------
+st.markdown("---")
+st.caption("Made with Streamlit ❤️")
+
