@@ -1,130 +1,132 @@
 import streamlit as st
-import re
+import streamlit.components.v1 as components
 
-# -----------------------------
-# Page config
-# -----------------------------
-st.set_page_config(
-    page_title="Feet Calculator",
-    layout="centered",
-    initial_sidebar_state="collapsed"
-)
+st.set_page_config(page_title="Feet Calculator", layout="centered")
 
-# -----------------------------
-# CSS
-# -----------------------------
-st.markdown("""
+html_code = """
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-.calc-display {
-    width: 100%;
+body {
+    margin: 0;
+    font-family: Arial, sans-serif;
+}
+.calc {
+    max-width: 420px;
+    margin: auto;
+}
+.display {
     background: black;
     color: white;
-    padding: 18px;
     font-size: 30px;
+    padding: 20px;
     text-align: right;
-    border-radius: 14px;
-    margin-bottom: 15px;
+    border-radius: 12px;
     min-height: 70px;
+    box-sizing: border-box;
 }
-.calc-row {
-    display: flex;
-    gap: 8px;
-    margin-bottom: 8px;
+.grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 10px;
+    margin-top: 15px;
 }
-.calc-row button {
-    flex: 1;
+button {
     height: 65px;
-    font-size: 24px;
-    border-radius: 14px;
+    font-size: 22px;
+    border-radius: 12px;
+    border: none;
+    cursor: pointer;
 }
+.op { background: #ff9500; color: white; }
+.num { background: #e0e0e0; }
+.clear { background: #ff3b30; color: white; grid-column: span 2; }
+.equal { background: #34c759; color: white; grid-column: span 2; }
 </style>
-""", unsafe_allow_html=True)
+</head>
 
-st.title("📏 Feet–Inch Calculator")
+<body>
+<div class="calc">
+    <div id="display" class="display"></div>
 
-# -----------------------------
-# Session state
-# -----------------------------
-if "display" not in st.session_state:
-    st.session_state.display = ""
+    <div class="grid">
+        <button class="num" onclick="press('7')">7</button>
+        <button class="num" onclick="press('8')">8</button>
+        <button class="num" onclick="press('9')">9</button>
+        <button class="op" onclick="press('/')">÷</button>
 
-# -----------------------------
-# Functions
-# -----------------------------
-def press(val):
-    st.session_state.display += val
+        <button class="num" onclick="press('4')">4</button>
+        <button class="num" onclick="press('5')">5</button>
+        <button class="num" onclick="press('6')">6</button>
+        <button class="op" onclick="press('*')">×</button>
 
-def delete():
-    st.session_state.display = st.session_state.display[:-1]
+        <button class="num" onclick="press('1')">1</button>
+        <button class="num" onclick="press('2')">2</button>
+        <button class="num" onclick="press('3')">3</button>
+        <button class="op" onclick="press('-')">−</button>
 
-def clear():
-    st.session_state.display = ""
+        <button class="num" onclick="press('0')">0</button>
+        <button class="num" onclick="press('.')">.</button>
+        <button class="num" onclick="del()">⌫</button>
+        <button class="op" onclick="press('+')">+</button>
 
-def feet_to_inches(num):
-    if "." in num:
-        f, i = num.split(".")
-        return int(f) * 12 + int(i)
-    return int(num) * 12
+        <button class="clear" onclick="clr()">C</button>
+        <button class="equal" onclick="calc()">=</button>
+    </div>
+</div>
 
-def calculate():
-    try:
-        expr = st.session_state.display
-        expr = expr.replace("×", "*").replace("÷", "/")
+<script>
+let display = document.getElementById("display");
+let expr = "";
 
-        # Detect operation type
-        if "*" in expr or "/" in expr:
-            final_divisor = 144
-        else:
-            final_divisor = 12
+function press(v) {
+    expr += v;
+    display.innerText = expr;
+}
 
-        tokens = re.split(r'([+\-*/])', expr)
-        converted = []
+function del() {
+    expr = expr.slice(0, -1);
+    display.innerText = expr;
+}
 
-        for t in tokens:
-            if t.isdigit() or "." in t:
-                converted.append(str(feet_to_inches(t)))
-            else:
-                converted.append(t)
+function clr() {
+    expr = "";
+    display.innerText = "";
+}
 
-        inch_expr = "".join(converted)
-        result_inches = eval(inch_expr)
+function feetToInch(n) {
+    if (n.includes(".")) {
+        let p = n.split(".");
+        return (parseInt(p[0]) * 12) + parseInt(p[1]);
+    }
+    return parseInt(n) * 12;
+}
 
-        result = result_inches / final_divisor
-        st.session_state.display = str(round(result, 2))
+function calc() {
+    try {
+        let div = (expr.includes("*") || expr.includes("/")) ? 144 : 12;
 
-    except:
-        st.session_state.display = "Error"
+        let tokens = expr.split(/([+\\-*/])/);
+        let converted = tokens.map(t => {
+            if (!isNaN(t) && t !== "") return feetToInch(t);
+            return t;
+        });
 
-# -----------------------------
-# Display
-# -----------------------------
-st.markdown(
-    f"<div class='calc-display'>{st.session_state.display}</div>",
-    unsafe_allow_html=True
-)
+        let resultInch = eval(converted.join(""));
+        let result = resultInch / div;
 
-# -----------------------------
-# Buttons
-# -----------------------------
-rows = [
-    ["7", "8", "9", "÷"],
-    ["4", "5", "6", "×"],
-    ["1", "2", "3", "−"],
-    ["0", ".", "⌫", "+"],
-]
+        expr = result.toFixed(2);
+        display.innerText = expr;
+    } catch {
+        display.innerText = "Error";
+        expr = "";
+    }
+}
+</script>
+</body>
+</html>
+"""
 
-for row in rows:
-    st.markdown("<div class='calc-row'>", unsafe_allow_html=True)
-    for btn in row:
-        if btn == "⌫":
-            st.button(btn, on_click=delete)
-        elif btn == "−":
-            st.button(btn, on_click=press, args=("-",))
-        else:
-            st.button(btn, on_click=press, args=(btn,))
-    st.markdown("</div>", unsafe_allow_html=True)
-
-st.button("C", use_container_width=True, on_click=clear)
-st.button("=", use_container_width=True, on_click=calculate)
-
-st.caption("➕➖ → ÷12   |   ✖➗ → ÷144")
+components.html(html_code, height=650)
