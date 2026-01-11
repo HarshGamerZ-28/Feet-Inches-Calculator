@@ -74,23 +74,23 @@ button {
         <button class="clear" onclick="clr()">C</button>
         <button class="op" onclick="press('( )')">( )</button>
         <button class="histBtn" onclick="toggleHistory()">History</button>
-        <button class="num" onclick="del()">⌫</button>
+        <button class="op" onclick="press('/')">÷</button>
 
         <!-- Numbers and operators -->
         <button class="num" onclick="press('7')">7</button>
         <button class="num" onclick="press('8')">8</button>
         <button class="num" onclick="press('9')">9</button>
-        <button class="op" onclick="press('/')">÷</button>
+        <button class="num" onclick="del()">⌫</button>
 
         <button class="num" onclick="press('4')">4</button>
         <button class="num" onclick="press('5')">5</button>
         <button class="num" onclick="press('6')">6</button>
-        <button class="op" onclick="press('+')">＋</button>
+        <button class="op" onclick="press('-')">−</button>
 
         <button class="num" onclick="press('1')">1</button>
         <button class="num" onclick="press('2')">2</button>
         <button class="num" onclick="press('3')">3</button>
-        <button class="op" onclick="press('-')">−</button>
+        <button class="op" onclick="press('+')">＋</button>
 
         <button class="num" onclick="press('0')">0</button>
         <button class="num" onclick="press('.')">.</button>
