@@ -47,10 +47,12 @@ def custom_calc(expr):
 # --- Streamlit UI ---
 st.title("Feet.Inches Calculator 🧮")
 
-if "expr" not in st.session_state:
-    st.session_state.expr = ""
+st.text_input("Expression", key="expr")
 
-st.text_input("Expression", st.session_state.expr, key="expr_box")
+if st.button("Calculate"):
+    result = custom_calc(st.session_state.expr)
+    st.subheader("Result:")
+    st.write(result)
 
 buttons = [
     ["7", "8", "9", "+"],
@@ -60,14 +62,10 @@ buttons = [
 ]
 
 for row in buttons:
-    cols = st.columns(4)
+    cols = st.columns(len(row))
     for i, b in enumerate(row):
-        if cols[i].button(b):
+        if cols[i].button(b, use_container_width=True):
             if b == "C":
                 st.session_state.expr = ""
             else:
                 st.session_state.expr += b
-
-if st.button("Calculate"):
-    result = custom_calc(st.session_state.expr)
-    st.write("Result:", result)
