@@ -1,17 +1,15 @@
 import streamlit as st
 
-# --- Conversion helper ---
 def convert_to_inches(value):
     try:
         if "." in value:
             feet, inches = value.split(".")
             return (int(feet) * 12) + int(inches)
         else:
-            return int(value) * 12  # allow plain feet input
+            return int(value) * 12
     except Exception:
         return None
 
-# --- Calculator logic ---
 def custom_calc(expr):
     try:
         if "+" in expr:
@@ -39,7 +37,7 @@ def custom_calc(expr):
         elif op == "-":
             result = inches1 - inches2
         elif op == "*":
-            result = (inches1 * inches2) / 144  # square feet
+            result = (inches1 * inches2) / 144
         elif op == "/":
             if inches2 == 0:
                 return "Division by zero!"
@@ -52,19 +50,21 @@ def custom_calc(expr):
 # --- Streamlit UI ---
 st.title("Feet.Inches Calculator 🧮")
 
-# Initialize session state
-st.session_state.setdefault("expr", "")
+# Internal state (not bound to widget)
+if "expr" not in st.session_state:
+    st.session_state["expr"] = ""
 
-# Text input bound directly to expr
-st.text_input("Expression", key="expr")
+# Text input shows current expr but uses a different key
+expr_box = st.text_input("Expression", value=st.session_state["expr"], key="expr_box")
 
-# Calculate button
+# Sync back from text input if user types manually
+st.session_state["expr"] = expr_box
+
 if st.button("Calculate"):
     result = custom_calc(st.session_state["expr"])
     st.subheader("Result:")
     st.write(result)
 
-# Keypad layout
 buttons = [
     ["7", "8", "9", "+"],
     ["4", "5", "6", "-"],
@@ -79,4 +79,6 @@ for row in buttons:
             if b == "C":
                 st.session_state["expr"] = ""
             else:
-                st.session_state["expr"] = st.session_state.get("expr", "") + b
+                st.session_state["expr"] = st.session_state["expr"] + b
+            # Update text input display
+            st.session_state["expr_box"] = st.session_state["expr"]
