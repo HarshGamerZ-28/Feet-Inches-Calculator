@@ -1,7 +1,7 @@
 import streamlit as st
 
 # -----------------------------
-# Page config
+# Page config (mobile first)
 # -----------------------------
 st.set_page_config(
     page_title="Feet Calculator",
@@ -10,16 +10,21 @@ st.set_page_config(
 )
 
 # -----------------------------
-# Custom CSS (mobile friendly)
+# CSS for calculator UI
 # -----------------------------
 st.markdown("""
 <style>
-.display input {
-    font-size: 28px !important;
+.calc-display {
+    width: 100%;
+    background: #f1f3f6;
+    padding: 18px;
+    font-size: 30px;
     text-align: right;
-    height: 70px;
+    border-radius: 14px;
+    margin-bottom: 15px;
+    min-height: 70px;
 }
-.stButton > button {
+.stButton>button {
     height: 65px;
     font-size: 24px;
     border-radius: 14px;
@@ -30,7 +35,7 @@ st.markdown("""
 st.title("📏 Feet–Inch Calculator")
 
 # -----------------------------
-# Session State
+# Session state
 # -----------------------------
 if "display" not in st.session_state:
     st.session_state.display = ""
@@ -38,8 +43,8 @@ if "display" not in st.session_state:
 # -----------------------------
 # Functions
 # -----------------------------
-def press(value):
-    st.session_state.display += value
+def press(val):
+    st.session_state.display += val
 
 def clear():
     st.session_state.display = ""
@@ -47,8 +52,6 @@ def clear():
 def calculate():
     try:
         expr = st.session_state.display
-
-        # Replace symbols with python operators
         expr = expr.replace("×", "*").replace("÷", "/")
 
         output = []
@@ -73,6 +76,7 @@ def calculate():
         inch_expr = "".join(output)
         result_inches = eval(inch_expr)
 
+        # Final feet value
         result_feet = result_inches / 144
         st.session_state.display = str(round(result_feet, 4))
 
@@ -80,18 +84,15 @@ def calculate():
         st.session_state.display = "Error"
 
 # -----------------------------
-# Display (TOP)
+# DISPLAY (TOP — ALWAYS UPDATES)
 # -----------------------------
-st.text_input(
-    "",
-    value=st.session_state.display,
-    disabled=True,
-    key="display_box",
-    label_visibility="collapsed"
+st.markdown(
+    f"<div class='calc-display'>{st.session_state.display}</div>",
+    unsafe_allow_html=True
 )
 
 # -----------------------------
-# Calculator Layout
+# Calculator buttons
 # -----------------------------
 buttons = [
     ["7", "8", "9", "÷"],
@@ -113,7 +114,4 @@ for row in buttons:
 
 st.button("=", use_container_width=True, on_click=calculate)
 
-# -----------------------------
-# Footer
-# -----------------------------
-st.caption("Format: feet.inches → Example: 2.4 = (2×12)+4 inches → ÷144")
+st.caption("Example: 2.4 → (2×12)+4 inches → ÷144 feet")
