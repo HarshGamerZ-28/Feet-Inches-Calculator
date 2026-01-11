@@ -1,15 +1,17 @@
 import streamlit as st
 
+# --- Conversion helper ---
 def convert_to_inches(value):
     try:
         if "." in value:
             feet, inches = value.split(".")
             return (int(feet) * 12) + int(inches)
         else:
-            return int(value) * 12  # allow plain feet
+            return int(value) * 12  # allow plain feet input
     except Exception:
         return None
 
+# --- Calculator logic ---
 def custom_calc(expr):
     try:
         if "+" in expr:
@@ -50,16 +52,19 @@ def custom_calc(expr):
 # --- Streamlit UI ---
 st.title("Feet.Inches Calculator 🧮")
 
-if "expr" not in st.session_state:
-    st.session_state["expr"] = ""
+# Initialize session state
+st.session_state.setdefault("expr", "")
 
+# Text input bound directly to expr
 st.text_input("Expression", key="expr")
 
+# Calculate button
 if st.button("Calculate"):
     result = custom_calc(st.session_state["expr"])
     st.subheader("Result:")
     st.write(result)
 
+# Keypad layout
 buttons = [
     ["7", "8", "9", "+"],
     ["4", "5", "6", "-"],
@@ -74,4 +79,4 @@ for row in buttons:
             if b == "C":
                 st.session_state["expr"] = ""
             else:
-                st.session_state["expr"] += b
+                st.session_state["expr"] = st.session_state.get("expr", "") + b
