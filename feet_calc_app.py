@@ -99,8 +99,8 @@ button {
 
         <button onclick="press('0')">0</button>
         <button onclick="press('.')">.</button>
-        <!-- swapped: delete here -->
-        <button onclick="del()">DEL</button>
+        <!-- swapped: delete here with ⌫ symbol -->
+        <button onclick="del()">⌫</button>
         <button onclick="calc()">=</button>
     </div>
     <div id="history"></div>
