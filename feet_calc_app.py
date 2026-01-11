@@ -16,12 +16,19 @@ body {
 }
 h2 {
     text-align: center;
-    margin: 15px;
-    color: #333;
+    margin: 0;
+    color: white;
+    background: linear-gradient(90deg, #00695c, #00b894); /* peacock green gradient */
+    padding: 15px;
+    border-radius: 12px 12px 0 0;
 }
 .calc {
     max-width: 420px;
     margin: auto;
+    border: 3px solid #00695c; /* peacock green border */
+    border-radius: 16px;
+    padding: 10px;
+    background: #e8f5e9; /* light green background inside */
 }
 .display {
     background: black;
@@ -45,7 +52,7 @@ button {
     border-radius: 14px;
     border: none;
     cursor: pointer;
-    background: linear-gradient(45deg, #007aff, #00c6ff);
+    background: linear-gradient(45deg, #007aff, #00c6ff); /* unified blue-cyan gradient */
     color: white;
 }
 #history {
